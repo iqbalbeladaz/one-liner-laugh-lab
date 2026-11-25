@@ -26,6 +26,8 @@ def entry_text() -> str:
         raise ValueError(f"entry is {len(ENTRY)} chars, must be 1-{MAX_CHARS}")
     if ENTRY.strip() != ENTRY or "\n" in ENTRY or not ENTRY.strip():
         raise ValueError("entry must be one clean, non-empty line")
+    if any(ord(c) < 0x20 for c in ENTRY):
+        raise ValueError("entry must not contain control characters")
     return ENTRY
 
 
@@ -39,6 +41,7 @@ def main() -> None:
     # exactly the validated line, byte for byte.
     if out.read_text(encoding="utf-8") != text:
         raise RuntimeError("round-trip check failed: entry.txt differs")
+    print(f"wrote {len(text)} chars to {out}")
 
 
 if __name__ == "__main__":
